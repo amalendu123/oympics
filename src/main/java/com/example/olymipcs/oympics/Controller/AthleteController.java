@@ -4,7 +4,6 @@ package com.example.olymipcs.oympics.Controller;
 import com.example.olymipcs.oympics.Entity.Athlete;
 import com.example.olymipcs.oympics.Entity.RegistrationEntity;
 import com.example.olymipcs.oympics.Service.RegisterService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

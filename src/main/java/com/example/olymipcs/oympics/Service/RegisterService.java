@@ -47,14 +47,12 @@ public class RegisterService {
                 .event(eventItem)
                 .build();
 
-        // Ensure participants list is initialized
         if (eventItem.getParticipants() == null) {
             eventItem.setParticipants(new ArrayList<>());
         }
         eventItem.getParticipants().add(athlete);
         eventRepository.save(eventItem);
 
-        // Save the new registration
         return registerRepository.save(newRegistration);
     }
 

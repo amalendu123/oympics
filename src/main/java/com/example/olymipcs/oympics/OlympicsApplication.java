@@ -43,7 +43,6 @@ public class OlympicsApplication implements CommandLineRunner {
 			Athlete athlete = SampleDataGenerator.generateSampleAthlete();
 			athlete = athleteRepository.save(athlete);
 
-			// Generate and save Event based on the Athlete's gender
 			Event event = SampleDataGenerator.generateSampleEventItem(athlete);
 			List<Event> existingEvents = eventRepository.findByName(event.getName());
 			Event savedEvent;
@@ -53,11 +52,9 @@ public class OlympicsApplication implements CommandLineRunner {
 				savedEvent = existingEvents.get(0);
 			}
 
-			// Create and save RegistrationEntity
 			RegistrationEntity registration = SampleDataGenerator.generateSampleRegistration(athlete, savedEvent);
 			registration = registrationRepository.save(registration);
 
-			// Register the athlete
 			registerService.registerAthlete(athlete, savedEvent.getId());
 
 			System.out.println("Sample Athlete: " + athlete);

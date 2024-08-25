@@ -8,10 +8,7 @@ import com.example.olymipcs.oympics.Repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,5 +70,57 @@ public class RequiredService {
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+    //male
+    public Athlete getMaleAthleteWithHighestScore() {
+        List<ScoreEntity> scores = scoreRepository.findAll();
+
+        Map<Athlete, Double> totalScoreByMaleAthlete = scores.stream()
+                .filter(score -> "male".equalsIgnoreCase(score.getAthlete().getGender()))
+                .collect(Collectors.groupingBy(
+                        ScoreEntity::getAthlete,
+                        Collectors.summingDouble(ScoreEntity::getScore)
+                ));
+
+        return totalScoreByMaleAthlete.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    //female
+    public Athlete getFemaleAthleteWithHighestScore() {
+        List<ScoreEntity> scores = scoreRepository.findAll();
+
+        Map<Athlete, Double> totalScoreByMaleAthlete = scores.stream()
+                .filter(score -> "Female".equalsIgnoreCase(score.getAthlete().getGender()))
+                .collect(Collectors.groupingBy(
+                        ScoreEntity::getAthlete,
+                        Collectors.summingDouble(ScoreEntity::getScore)
+                ));
+
+        return totalScoreByMaleAthlete.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+    public List<MedalTally> getMedalTallyForFirstNNations(int n) {
+        List<MedalTally> allMedalTallies = medalTallyRepository.findAll();
+
+        return allMedalTallies.stream()
+                .sorted((m1, m2) -> m1.getCountryCode().compareTo(m2.getCountryCode())) // Adjust this sorting logic if you have a participation order
+                .limit(n)
+                .collect(Collectors.toList());
+    }
+
+    public List<MedalTally> getMedalTallyForFirstNNations(UUID eventId, int n) {
+        List<MedalTally> medalTallies = scoreRepository.findByEventId(eventId).stream()
+                .map(score -> medalTallyRepository.findByCountryCode(score.getAthlete().getCountryCode())
+                        .orElse(null))
+                .distinct()
+                .filter(medalTally -> medalTally != null)
+                .sorted((t1, t2) -> Integer.compare(t2.getPoints(), t1.getPoints()))
+                .collect(Collectors.toList());
+        return medalTallies.stream().limit(n).collect(Collectors.toList());
     }
 }
