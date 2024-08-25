@@ -13,9 +13,14 @@ public class SampleDataGenerator {
             new Locale("es", "ES"), new Locale("pt", "BR"), new Locale("it", "IT")
     );
 
-    private static final String[] EVENT_NAMES = {
+    private static final String[] MALE_EVENT_NAMES = {
             "Running", "Long Jump", "100m Sprint", "High Jump", "Pole Vault",
             "Marathon", "1500m", "Discus Throw", "Javelin Throw", "Shot Put"
+    };
+
+    private static final String[] FEMALE_EVENT_NAMES = {
+            "Running F", "Long Jump F", "100m Sprint F", "High Jump F", "Pole Vault F",
+            "Marathon F", "1500m F", "Discus Throw F", "Javelin Throw F", "Shot Put F"
     };
 
     private static final Map<String, Event> eventCache = new HashMap<>();
@@ -46,8 +51,9 @@ public class SampleDataGenerator {
         );
     }
 
-    public static Event generateSampleEventItem() {
-        String randomEventName = EVENT_NAMES[(int) (Math.random() * EVENT_NAMES.length)];
+    public static Event generateSampleEventItem(Athlete athlete) {
+        String[] eventNames = athlete.getGender().equals("Female") ? FEMALE_EVENT_NAMES : MALE_EVENT_NAMES;
+        String randomEventName = eventNames[(int) (Math.random() * eventNames.length)];
         return getOrCreateEvent(randomEventName);
     }
 

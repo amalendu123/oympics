@@ -42,8 +42,8 @@ public class OlympicsApplication implements CommandLineRunner {
 		Athlete athlete = SampleDataGenerator.generateSampleAthlete();
 		athlete = athleteRepository.save(athlete);
 
-		// Generate and save Event
-		Event event = SampleDataGenerator.generateSampleEventItem();
+		// Generate and save Event based on the Athlete's gender
+		Event event = SampleDataGenerator.generateSampleEventItem(athlete);
 		List<Event> existingEvents = eventRepository.findByName(event.getName());
 		Event savedEvent;
 		if (existingEvents.isEmpty()) {
