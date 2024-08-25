@@ -37,22 +37,23 @@ public class MedalTallyService {
     private void assignMedal(Athlete athlete, String medalType) {
         String countryCode = athlete.getCountryCode();
         MedalTally medalTally = medalTallyRepository.findByCountryCode(countryCode)
-                .orElse(new MedalTally(UUID.randomUUID(), countryCode, 0, 0, 0));
+                .orElse(new MedalTally(UUID.randomUUID(), countryCode, 0, 0, 0, 0));
 
         switch (medalType.toLowerCase()) {
             case "gold":
                 medalTally.setGoldMedals(medalTally.getGoldMedals() + 1);
+                medalTally.setPoints(medalTally.getPoints() + 10); // Add 10 points for gold
                 break;
             case "silver":
                 medalTally.setSilverMedals(medalTally.getSilverMedals() + 1);
+                medalTally.setPoints(medalTally.getPoints() + 5);  // Add 5 points for silver
                 break;
             case "bronze":
                 medalTally.setBronzeMedals(medalTally.getBronzeMedals() + 1);
+                medalTally.setPoints(medalTally.getPoints() + 2);  // Add 2 points for bronze
                 break;
         }
 
         medalTallyRepository.save(medalTally);
     }
 }
-
-

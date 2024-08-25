@@ -29,4 +29,6 @@ public class MedalTally {
     private int silverMedals;
 
     private int bronzeMedals;
+
+    private int points;
 }
