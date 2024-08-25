@@ -39,28 +39,30 @@ public class OlympicsApplication implements CommandLineRunner {
 	@Transactional
 	public void run(String... args) throws Exception {
 		// Generate and save Athlete
-		Athlete athlete = SampleDataGenerator.generateSampleAthlete();
-		athlete = athleteRepository.save(athlete);
+		for (int i = 0; i < 100; i++) {
+			Athlete athlete = SampleDataGenerator.generateSampleAthlete();
+			athlete = athleteRepository.save(athlete);
 
-		// Generate and save Event based on the Athlete's gender
-		Event event = SampleDataGenerator.generateSampleEventItem(athlete);
-		List<Event> existingEvents = eventRepository.findByName(event.getName());
-		Event savedEvent;
-		if (existingEvents.isEmpty()) {
-			savedEvent = eventRepository.save(event);
-		} else {
-			savedEvent = existingEvents.get(0);
+			// Generate and save Event based on the Athlete's gender
+			Event event = SampleDataGenerator.generateSampleEventItem(athlete);
+			List<Event> existingEvents = eventRepository.findByName(event.getName());
+			Event savedEvent;
+			if (existingEvents.isEmpty()) {
+				savedEvent = eventRepository.save(event);
+			} else {
+				savedEvent = existingEvents.get(0);
+			}
+
+			// Create and save RegistrationEntity
+			RegistrationEntity registration = SampleDataGenerator.generateSampleRegistration(athlete, savedEvent);
+			registration = registrationRepository.save(registration);
+
+			// Register the athlete
+			registerService.registerAthlete(athlete, savedEvent.getId());
+
+			System.out.println("Sample Athlete: " + athlete);
+			System.out.println("Sample Event: " + savedEvent);
+			System.out.println("Sample Registration: " + registration);
 		}
-
-		// Create and save RegistrationEntity
-		RegistrationEntity registration = SampleDataGenerator.generateSampleRegistration(athlete, savedEvent);
-		registration = registrationRepository.save(registration);
-
-		// Register the athlete
-		registerService.registerAthlete(athlete, savedEvent.getId());
-
-		System.out.println("Sample Athlete: " + athlete);
-		System.out.println("Sample Event: " + savedEvent);
-		System.out.println("Sample Registration: " + registration);
 	}
 }

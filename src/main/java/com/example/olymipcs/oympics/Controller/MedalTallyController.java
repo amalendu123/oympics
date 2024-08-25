@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/medal-tally")
 public class MedalTallyController {
@@ -14,11 +12,11 @@ public class MedalTallyController {
     @Autowired
     private MedalTallyService medalTallyService;
 
-    @PostMapping("/assign-medals/{eventId}")
-    public ResponseEntity<String> assignMedals(@PathVariable UUID eventId) {
+    @PostMapping("/assign-medals")
+    public ResponseEntity<String> assignMedals() {
         try {
-            medalTallyService.assignMedalsForEvent(eventId);
-            return ResponseEntity.ok("Medals assigned successfully.");
+            medalTallyService.assignMedalsForAllEvents();
+            return ResponseEntity.ok("Medals assigned successfully to all events.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }

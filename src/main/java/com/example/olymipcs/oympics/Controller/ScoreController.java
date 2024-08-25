@@ -36,26 +36,23 @@ public class ScoreController {
         return eventRepository.findAll();
     }
     @Transactional
-    @PostMapping("/simulate-event")
-    public List<ScoreEntity> simulateEvent(@RequestBody SimulateEventRequest request) {
-        UUID eventId = request.getEventId();
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-
-        Hibernate.initialize(event.getParticipants());
+    @PostMapping("/simulate-all-events")
+    public List<ScoreEntity> simulateAllEvents() {
+        List<Event> allEvents = eventRepository.findAll();
         List<ScoreEntity> newScores = new ArrayList<>();
-        System.out.println(event.getParticipants());
-        for (Athlete athlete : event.getParticipants()) {
-            ScoreEntity scoreEntity = new ScoreEntity();
 
-            scoreEntity.setAthlete(athlete);
-
-            scoreEntity.setEvent(event);
-
-            scoreEntity.setScore(Math.random() * 100);
-
-            scoreRepository.save(scoreEntity);
+        for (Event event : allEvents) {
+            Hibernate.initialize(event.getParticipants());
+            for (Athlete athlete : event.getParticipants()) {
+                ScoreEntity scoreEntity = new ScoreEntity();
+                scoreEntity.setAthlete(athlete);
+                scoreEntity.setEvent(event);
+                scoreEntity.setScore(Math.random() * 100); // Simulate a score between 0 and 100
+                scoreRepository.save(scoreEntity);
+                newScores.add(scoreEntity); // Collect the scores
+            }
         }
+
         return newScores;
     }
 
