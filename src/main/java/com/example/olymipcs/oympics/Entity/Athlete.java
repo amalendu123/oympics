@@ -1,5 +1,6 @@
 package com.example.olymipcs.oympics.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Athlete {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonIgnore
     @ToString.Exclude
     private Event event;
 }

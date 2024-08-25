@@ -1,22 +1,28 @@
 package com.example.olymipcs.oympics.Service;
 
+import com.example.olymipcs.oympics.Entity.Athlete;
 import com.example.olymipcs.oympics.Entity.MedalTally;
+import com.example.olymipcs.oympics.Entity.ScoreEntity;
 import com.example.olymipcs.oympics.Repository.MedalTallyRepository;
+import com.example.olymipcs.oympics.Repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RequiredService {
 
     @Autowired
     final MedalTallyRepository medalTallyRepository;
-
-    public RequiredService(MedalTallyRepository medalTallyRepository) {
+    final ScoreRepository scoreRepository;
+    public RequiredService(MedalTallyRepository medalTallyRepository, ScoreRepository scoreRepository) {
         this.medalTallyRepository = medalTallyRepository;
+        this.scoreRepository = scoreRepository;
     }
 
     public com.example.olymipcs.oympics.dto.MedalSummaryDTO getMedalSummary() {
@@ -56,5 +62,16 @@ public class RequiredService {
                 totalSilverMedals,
                 totalBronzeMedals
         );
+    }
+    public Athlete getAthleteWithHighestMedals() {
+        List<ScoreEntity> scores = scoreRepository.findAll();
+
+        Map<Athlete, Long> medalCountByAthlete = scores.stream()
+                .collect(Collectors.groupingBy(ScoreEntity::getAthlete, Collectors.counting()));
+
+        return medalCountByAthlete.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 }

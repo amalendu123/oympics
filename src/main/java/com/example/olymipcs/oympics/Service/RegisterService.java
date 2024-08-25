@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -38,16 +39,18 @@ public class RegisterService {
         Event eventItem = eventRepository.findById(eventItemId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-
         athlete.setEvent(eventItem);
-
         athleteRepository.save(athlete);
 
-        // Create a new registration entry
         RegistrationEntity newRegistration = RegistrationEntity.builder()
                 .athlete(athlete)
                 .event(eventItem)
                 .build();
+
+        // Ensure participants list is initialized
+        if (eventItem.getParticipants() == null) {
+            eventItem.setParticipants(new ArrayList<>());
+        }
         eventItem.getParticipants().add(athlete);
         eventRepository.save(eventItem);
 

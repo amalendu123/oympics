@@ -1,4 +1,5 @@
 package com.example.olymipcs.oympics;
+
 import com.example.olymipcs.oympics.Entity.Athlete;
 import com.example.olymipcs.oympics.Entity.Event;
 import com.example.olymipcs.oympics.Entity.RegistrationEntity;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @SpringBootApplication
 public class OlympicsApplication implements CommandLineRunner {
@@ -21,31 +25,42 @@ public class OlympicsApplication implements CommandLineRunner {
 	@Autowired
 	private EventRepository eventRepository;
 
-
-
 	@Autowired
 	private RegisterRepository registrationRepository;
 
 	@Autowired
 	private RegisterService registerService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(OlympicsApplication.class, args);
 	}
 
 	@Override
+	@Transactional
 	public void run(String... args) throws Exception {
+		// Generate and save Athlete
 		Athlete athlete = SampleDataGenerator.generateSampleAthlete();
-		Event event = SampleDataGenerator.generateSampleEventItem(2);
-		RegistrationEntity registration = SampleDataGenerator.generateSampleRegistration(athlete, event);
+		athlete = athleteRepository.save(athlete);
 
-		athleteRepository.save(athlete);
-		eventRepository.save(event);
-		registrationRepository.save(registration);
+		// Generate and save Event
+		Event event = SampleDataGenerator.generateSampleEventItem();
+		List<Event> existingEvents = eventRepository.findByName(event.getName());
+		Event savedEvent;
+		if (existingEvents.isEmpty()) {
+			savedEvent = eventRepository.save(event);
+		} else {
+			savedEvent = existingEvents.get(0);
+		}
 
+		// Create and save RegistrationEntity
+		RegistrationEntity registration = SampleDataGenerator.generateSampleRegistration(athlete, savedEvent);
+		registration = registrationRepository.save(registration);
 
-		registerService.registerAthlete(athlete,event.getId());
+		// Register the athlete
+		registerService.registerAthlete(athlete, savedEvent.getId());
+
 		System.out.println("Sample Athlete: " + athlete);
-		System.out.println("Sample Event: " + event);
+		System.out.println("Sample Event: " + savedEvent);
 		System.out.println("Sample Registration: " + registration);
 	}
 }

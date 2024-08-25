@@ -2,6 +2,7 @@ package com.example.olymipcs.oympics.Entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+
     private String name;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
@@ -31,4 +33,5 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Athlete> participants = new ArrayList<>();
+    
 }
