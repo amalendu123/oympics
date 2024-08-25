@@ -1,4 +1,4 @@
-Getting Started
+<b>Getting Started</b>
 Prerequisites
 Java 17 or higher
 Maven 3.6.3 or higher
@@ -35,7 +35,8 @@ First Run Setup: On the first run, the system should automatically register 100 
 
 Example:
 
-
+java
+Copy code
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -58,7 +59,8 @@ Endpoint: /register/athlete
 Method: POST
 Description: Registers a new athlete for a given event.
 Request Body:
-
+json
+Copy code
 {
   "name": "John Doe",
   "countryCode": "USA"
