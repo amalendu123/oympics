@@ -16,8 +16,8 @@ This project is a Spring Boot application that manages an Olympics-like event. T
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/olympics-management-system.git
-    cd olympics-management-system
+    git clone https://github.com/your-username/olympics.git
+    cd olympics
     ```
 
 2. **Configure the database:**
